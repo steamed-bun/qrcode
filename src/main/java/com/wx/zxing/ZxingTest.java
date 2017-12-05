@@ -15,17 +15,21 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * 生成二维码
+ */
 public class ZxingTest {
 
     public static void main(String[] args) {
-//       create();
 //        read();
         try {
-            test2();
+        create();
+//            test2();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (WriterException e) {
@@ -127,40 +131,22 @@ public class ZxingTest {
 
     }
 
+    public static void create() throws IOException, WriterException {
 
+        Writer writer = new QRCodeWriter();
+        String contents = "https://www.baidu.com/";
+        contents = "中文";
+        Map map = new HashMap();
+        map.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        map.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+        map.put(EncodeHintType.DATA_MATRIX_SHAPE, SymbolShapeHint.FORCE_RECTANGLE);
+        map.put(EncodeHintType.QR_VERSION, 3);
+        map.put(EncodeHintType.MARGIN, 0);
 
-
-
-//
-//
-//    public static void create(){
-//
-////        File file = new File("e:/ddd.png");
-//
-//            Writer writer = new QRCodeWriter();
-//            String contents = "https://www.baidu.com/";
-////        contents = "中文";
-//            Map map = new HashMap();
-////        map.put(EncodeHintType.CHARACTER_SET, "utf-8");
-//            map.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-//            map.put(EncodeHintType.DATA_MATRIX_SHAPE, SymbolShapeHint.FORCE_RECTANGLE);
-//            map.put(EncodeHintType.QR_VERSION, 3);
-//            map.put(EncodeHintType.MARGIN, 0);
-//
-//            try {
-//                BitMatrix bitMatrix = writer.encode(contents, BarcodeFormat.QR_CODE, 50, 50, map);
-//                Path path = new File("e:/img.png").toPath();
-////            MatrixToImageWriter.writeToFile(bitMatrix, "png", path);
-//                MatrixToImageWriter.writeToPath(bitMatrix, "png", path);
-//
-////            BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
-//
-//            } catch (WriterException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+            BitMatrix bitMatrix = writer.encode(contents, BarcodeFormat.QR_CODE, 200, 200, map);
+            Path path = new File("e:/img.png").toPath();
+            MatrixToImageWriter.writeToPath(bitMatrix, "png", path);
+    }
 
 //    public static void read(){
 //        Reader reader = new QRCodeReader();

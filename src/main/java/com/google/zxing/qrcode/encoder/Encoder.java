@@ -77,6 +77,7 @@ public final class Encoder {
                               Map<EncodeHintType,?> hints) throws WriterException {
 
     // Determine what character encoding has been specified by the caller, if any
+    //编码默认ISO-8859-1
     String encoding = DEFAULT_BYTE_MODE_ENCODING;
     if (hints != null && hints.containsKey(EncodeHintType.CHARACTER_SET)) {
       encoding = hints.get(EncodeHintType.CHARACTER_SET).toString();
@@ -84,6 +85,7 @@ public final class Encoder {
 
     // Pick an encoding mode appropriate for the content. Note that this will not attempt to use
     // multiple modes / segments even if that were more efficient. Twould be nice.
+    //数据编码方式选择
     Mode mode = chooseMode(content, encoding);
 
     // This will store the header information, like mode and
@@ -206,6 +208,7 @@ public final class Encoder {
   private static Mode chooseMode(String content, String encoding) {
     if ("Shift_JIS".equals(encoding) && isOnlyDoubleByteKanji(content)) {
       // Choose Kanji mode if all input are double-byte characters
+      //日文编码 双字节编码
       return Mode.KANJI;
     }
     boolean hasNumeric = false;
@@ -217,13 +220,16 @@ public final class Encoder {
       } else if (getAlphanumericCode(c) != -1) {
         hasAlphanumeric = true;
       } else {
+        //字节编码
         return Mode.BYTE;
       }
     }
     if (hasAlphanumeric) {
+      //字符编码
       return Mode.ALPHANUMERIC;
     }
     if (hasNumeric) {
+      //数字编码
       return Mode.NUMERIC;
     }
     return Mode.BYTE;

@@ -51,7 +51,7 @@ public final class BitArray implements Cloneable {
   public int getSizeInBytes() {
     return (size + 7) / 8;
   }
-
+  //确保数组容量足够
   private void ensureCapacity(int size) {
     if (size > bits.length * 32) {
       int[] newBits = makeArray(size);
@@ -65,6 +65,10 @@ public final class BitArray implements Cloneable {
    * @return true iff bit i is set
    */
   public boolean get(int i) {
+//    System.out.println(i);
+//    System.out.println((1 << (i & 0x1F) )+ "^^^^^^^^^");
+//    System.out.println(bits[i / 32] + "++++++++++++");
+//    System.out.println();
     return (bits[i / 32] & (1 << (i & 0x1F))) != 0;
   }
 
@@ -216,7 +220,10 @@ public final class BitArray implements Cloneable {
   public void appendBit(boolean bit) {
     ensureCapacity(size + 1);
     if (bit) {
+      System.out.println(size / 32 + "---------");
+      System.out.println(1 << (size & 0x1F));
       bits[size / 32] |= 1 << (size & 0x1F);
+      System.out.println(bits[size / 32]+"##########");
     }
     size++;
   }
@@ -234,8 +241,8 @@ public final class BitArray implements Cloneable {
       throw new IllegalArgumentException("Num bits must be between 0 and 32");
     }
     ensureCapacity(size + numBits);
+    //取出 value 二进制下的所有的1
     for (int numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--) {
-      System.out.println(value >> (numBitsLeft - 1));
       appendBit(((value >> (numBitsLeft - 1)) & 0x01) == 1);
     }
   }

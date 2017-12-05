@@ -25,16 +25,16 @@ package com.google.zxing.qrcode.decoder;
 public enum Mode {
 
   TERMINATOR(new int[]{0, 0, 0}, 0x00), // Not really a mode...
-  NUMERIC(new int[]{10, 12, 14}, 0x01),
-  ALPHANUMERIC(new int[]{9, 11, 13}, 0x02),
-  STRUCTURED_APPEND(new int[]{0, 0, 0}, 0x03), // Not supported
-  BYTE(new int[]{8, 16, 16}, 0x04),
-  ECI(new int[]{0, 0, 0}, 0x07), // character counts don't apply
-  KANJI(new int[]{8, 10, 12}, 0x08),
-  FNC1_FIRST_POSITION(new int[]{0, 0, 0}, 0x05),
+  NUMERIC(new int[]{10, 12, 14}, 0x01),//数字编码
+  ALPHANUMERIC(new int[]{9, 11, 13}, 0x02),//字符编码
+  STRUCTURED_APPEND(new int[]{0, 0, 0}, 0x03), // Not supported 混合编码 但不支持...
+  BYTE(new int[]{8, 16, 16}, 0x04),//字节编码
+  ECI(new int[]{0, 0, 0}, 0x07), // character counts don't apply 特殊字符集 Extended Channel Interpretation
+  KANJI(new int[]{8, 10, 12}, 0x08),//日文编码
+  FNC1_FIRST_POSITION(new int[]{0, 0, 0}, 0x05),//特殊编码
   FNC1_SECOND_POSITION(new int[]{0, 0, 0}, 0x09),
   /** See GBT 18284-2000; "Hanzi" is a transliteration of this mode name. */
-  HANZI(new int[]{8, 10, 12}, 0x0D);
+  HANZI(new int[]{8, 10, 12}, 0x0D);//音译???
 
   private final int[] characterCountBitsForVersions;
   private final int bits;

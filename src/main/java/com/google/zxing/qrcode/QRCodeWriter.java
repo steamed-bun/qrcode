@@ -64,7 +64,9 @@ public final class QRCodeWriter implements Writer {
           height);
     }
 
+    //纠错等级 默认是L
     ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.L;
+    //margin 二维码白边 默认是4
     int quietZone = QUIET_ZONE_SIZE;
     if (hints != null) {
       if (hints.containsKey(EncodeHintType.ERROR_CORRECTION)) {
@@ -75,6 +77,7 @@ public final class QRCodeWriter implements Writer {
       }
     }
 
+    //
     QRCode code = Encoder.encode(contents, errorCorrectionLevel, hints);
     return renderResult(code, width, height, quietZone);
   }

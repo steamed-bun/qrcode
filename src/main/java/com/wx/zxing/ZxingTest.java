@@ -28,8 +28,8 @@ public class ZxingTest {
     public static void main(String[] args) {
 //        read();
         try {
-        create();
-//            test2();
+//        create();
+            test2();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (WriterException e) {
@@ -48,9 +48,9 @@ public class ZxingTest {
         int width1 = 145;//二维码宽 x
         int height1 = 145;//二维码高 y
         String pathname = "e:/fff.png";//背景图读取地址 也是最终图片输出路径
-
         int  tempW = 135;//二维码起始点位置x
         int  tempH = 200;//二维码起始点位置y
+//        contents = "中文不会乱码吧";
 
 //        生成二维码
         Map map = new HashMap();//生成二维码配置
@@ -58,6 +58,7 @@ public class ZxingTest {
         map.put(EncodeHintType.DATA_MATRIX_SHAPE, SymbolShapeHint.FORCE_SQUARE);//二维码矩阵形状
         map.put(EncodeHintType.QR_VERSION, version);//二维码版本
         map.put(EncodeHintType.MARGIN, margin);//二维码白边宽度 文件上要求最小是4
+        map.put(EncodeHintType.CHARACTER_SET,"UTF-8");//如果内容是中文的话必须要加上,防止乱码
 
         Writer writer = new QRCodeWriter();
         BitMatrix bitMatrix = writer.encode(contents, BarcodeFormat.QR_CODE, width1, height1, map);

@@ -135,12 +135,16 @@ final class MatrixUtil {
                           int maskPattern,
                           ByteMatrix matrix) throws WriterException {
     clearMatrix(matrix);
+    //嵌入位置方块，时序线之类的基本信息
     embedBasicPatterns(version, matrix);
     // Type information appear with any version.
+    //嵌入格式信息 是一个 15 bits的信息, 需要与101010000010010(0x5412)做异或处理,
     embedTypeInfo(ecLevel, maskPattern, matrix);
     // Version info appear if version >= 7.
+    //版本>=7的需要加入版本信息 18个bits
     maybeEmbedVersionInfo(version, matrix);
     // Data should be embedded at end.
+    //加入数据编码信息
     embedDataBits(dataBits, maskPattern, matrix);
   }
 
@@ -152,13 +156,17 @@ final class MatrixUtil {
   // - Position adjustment patterns, if need be
   static void embedBasicPatterns(Version version, ByteMatrix matrix) throws WriterException {
     // Let's get started with embedding big squares at corners.
+    //嵌入位置检测模式和分隔符--就是位置大方块
     embedPositionDetectionPatternsAndSeparators(matrix);
     // Then, embed the dark dot at the left bottom corner.
+    //在左下角嵌入黑点
     embedDarkDotAtLeftBottomCorner(matrix);
 
-    // Position adjustment patterns appear if version >= 2.
+    // Position adjustment patterns appear if version >= 2
+    // 如果 version>2 嵌入位置调整
     maybeEmbedPositionAdjustmentPatterns(version, matrix);
     // Timing patterns should be embedded after position adj. patterns.
+    //嵌入时序模式 -- 就是一条横线 一条竖线
     embedTimingPatterns(matrix);
   }
 

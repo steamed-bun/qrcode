@@ -90,9 +90,11 @@ public final class Encoder {
 
     // This will store the header information, like mode and
     // length, as well as "header" segments like an ECI segment.
+    //保存数据编码的信息：编码方式
     BitArray headerBits = new BitArray();
 
     // Append ECI segment if applicable
+    //如果适用，就追加特殊字符集和具体编码标识
     if (mode == Mode.BYTE && !DEFAULT_BYTE_MODE_ENCODING.equals(encoding)) {
       CharacterSetECI eci = CharacterSetECI.getCharacterSetECIByName(encoding);
       if (eci != null) {
@@ -101,16 +103,19 @@ public final class Encoder {
     }
 
     // (With ECI in place,) Write the mode marker
+    //加入编码方式标识
     appendModeInfo(mode, headerBits);
 
     // Collect data within the main segment, separately, to count its size if needed. Don't add it to
     // main payload yet.
+    //保存数据 content 编码后的的 bit
     BitArray dataBits = new BitArray();
     appendBytes(content, mode, dataBits, encoding);
 
     Version version;
     if (hints != null && hints.containsKey(EncodeHintType.QR_VERSION)) {
       int versionNumber = Integer.parseInt(hints.get(EncodeHintType.QR_VERSION).toString());
+      //获得不同版本，不同纠错级别下不同编码块中的错误码个数--这个是标准的，是有一张表标明的
       version = Version.getVersionForNumber(versionNumber);
       int bitsNeeded = calculateBitsNeeded(mode, headerBits, dataBits, version);
       if (!willFit(bitsNeeded, version, ecLevel)) {
@@ -121,20 +126,25 @@ public final class Encoder {
     }
 
     BitArray headerAndDataBits = new BitArray();
+    //合并
     headerAndDataBits.appendBitArray(headerBits);
     // Find "length" of main segment and write it
     int numLetters = mode == Mode.BYTE ? dataBits.getSizeInBytes() : content.length();
+    //加入长度信息
     appendLengthInfo(numLetters, version, mode, headerAndDataBits);
     // Put data together into the overall payload
     headerAndDataBits.appendBitArray(dataBits);
 
+    //获取需纠错码块
     Version.ECBlocks ecBlocks = version.getECBlocksForLevel(ecLevel);
     int numDataBytes = version.getTotalCodewords() - ecBlocks.getTotalECCodewords();
 
     // Terminate the bits properly.
+    //添加终止位
     terminateBits(numDataBytes, headerAndDataBits);
 
     // Interleave data bits with error correction code.
+    //用纠错码交织数据位
     BitArray finalBits = interleaveWithECBytes(headerAndDataBits,
                                                version.getTotalCodewords(),
                                                numDataBytes,
@@ -149,10 +159,12 @@ public final class Encoder {
     //  Choose the mask pattern and set to "qrCode".
     int dimension = version.getDimensionForVersion();
     ByteMatrix matrix = new ByteMatrix(dimension, dimension);
+    //选择掩码图案
     int maskPattern = chooseMaskPattern(finalBits, ecLevel, version, matrix);
     qrCode.setMaskPattern(maskPattern);
 
     // Build the matrix and set it to "qrCode".
+    //构建二维码不同位置的数据
     MatrixUtil.buildMatrix(finalBits, ecLevel, version, maskPattern, matrix);
     qrCode.setMatrix(matrix);
 
@@ -315,6 +327,7 @@ public final class Encoder {
     }
     // Append termination bits. See 8.4.8 of JISX0510:2004 (p.24) for details.
     // If the last byte isn't 8-bit aligned, we'll add padding bits.
+    //如果最后一个字节不是8位对齐，需要添加填充位。
     int numBitsInLastByte = bits.getSize() & 0x07;    
     if (numBitsInLastByte > 0) {
       for (int i = numBitsInLastByte; i < 8; i++) {

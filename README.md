@@ -20,6 +20,6 @@
 
 wx.zxing.bitArray和RandomIntArray包下面的是自己的测试文件，主要作用如下：
 
-[用 int 来储存 boolean 数组 代码](http://www.jianshu.com/p/5549d30640e4)
+[用 int 来储存 boolean 数组](http://www.jianshu.com/p/899ce9f26441)
 
 [生成随机0、1矩阵](http://www.jianshu.com/p/e2d557cf1226)
